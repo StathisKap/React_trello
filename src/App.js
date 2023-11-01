@@ -1,11 +1,22 @@
-import React from 'react';
-import styled from 'styled-components'
+import { DataProvider } from './app/DataProvider';
+import * as T from './components/Themes';
+import Board  from './components/Board'
+import Header from './components/Header';
 import './App.css';
 
-function App() {
+/**
+ *
+ *
+ * 
+ */
+export default function App() {
+
   return (
-  <p>'ok'</p>
+    <T.CustomThemeProvider>
+        <Header/>
+        <DataProvider>
+          <Board/>
+        </DataProvider>
+    </T.CustomThemeProvider>
   );
 }
-
-export default App;
