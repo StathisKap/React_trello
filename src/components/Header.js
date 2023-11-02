@@ -37,6 +37,7 @@ S.Header = styled.div`
   margin: auto;
   justify-content: end;
   padding: 2px;
+  width: 100%;
  `;
 
  S.Button = styled.button`

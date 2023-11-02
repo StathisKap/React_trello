@@ -3,9 +3,11 @@ import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
   html, body, #root {
-    height: 100%;
+    height: 100vh;
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
   }
 
   body {

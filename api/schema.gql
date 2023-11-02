@@ -1,0 +1,41 @@
+type Board {
+  id: ID!
+  title: String!
+}
+
+type List {
+  id: ID!
+  title: String!
+  board_id: ID!
+}
+
+type Card {
+  id: ID!
+  title: String!
+  list_id: ID!
+}
+
+type ListWithCards {
+  id: ID!
+  title: String!
+  board_id: ID!
+  cards: [Card]
+}
+
+type Mutation {
+  updateCardTitle(id: ID!, title: String!): Card
+}
+
+type Query {
+  board(id: ID!): Board
+  list(id: ID!): List
+  card(id: ID!): Card
+  allBoards: [Board]
+  allListsWithCards(board_id: ID!): [ListWithCards]
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+
+}

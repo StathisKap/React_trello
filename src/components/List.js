@@ -12,7 +12,7 @@ import styled, { css } from 'styled-components'
  *
  * 
  */
-export default function List({list}){
+export default function List({ list }) {
   const [isOverSubElement, setIsOverSubElement] = React.useState(false);
 
   /**
@@ -26,9 +26,9 @@ export default function List({list}){
 
   return (
     <S.List
-    draggable={!isOverSubElement}
-    onDragStart={handleDragStart} 
-    onDragEnd={handleDragEnd}
+      draggable={!isOverSubElement}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
     >
       <S.Title
         key={list.id}
@@ -39,14 +39,14 @@ export default function List({list}){
         defaultValue={title}
       />
       {list.cards.map((card) => (
-      <S.Card
-        key={card.id}
-        onKeyDown={handleKeyDown}
-        onBlur={(e) => handleCardBlur(card.id, e)}
-        onMouseOver={handleMouseOver}
-        onMouseOut={handleMouseOut}
-        defaultValue={card.title}
-      />
+        <S.Card
+          key={card.id}
+          onKeyDown={handleKeyDown}
+          onBlur={(e) => handleCardBlur(card.id, e)}
+          onMouseOver={handleMouseOver}
+          onMouseOut={handleMouseOut}
+          defaultValue={card.title}
+        />
       ))}
     </S.List>
   );
@@ -56,28 +56,28 @@ export default function List({list}){
    *
    * 
    */
-   function handleDragStart(event){
+  function handleDragStart(event) {
     event.dataTransfer.setData('text/plain', list.title);
     event.currentTarget.classList.add('tilted');
   }
-  
-  function handleDragEnd(event){
+
+  function handleDragEnd(event) {
     event.dataTransfer.getData('text/plain', list.title);
     event.currentTarget.classList.remove('tilted');
   }
-  function handleMouseOver(){
+  function handleMouseOver() {
     setIsOverSubElement(true);
   };
 
-  function handleMouseOut(){
+  function handleMouseOut() {
     setIsOverSubElement(false);
   };
 
-  function handleTitleBlur(e){
+  function handleTitleBlur(e) {
     setTitle(e.target.value);
   };
 
-  function handleCardBlur(index, e){
+  function handleCardBlur(index, e) {
     const newCards = cards.slice();
     newCards[index] = {
       ...newCards[index],
