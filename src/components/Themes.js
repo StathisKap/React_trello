@@ -6,7 +6,7 @@
 import React from "react";
 import { createContext } from "react";
 import { ThemeProvider } from 'styled-components';
-import GlobalStyles from './GlobalStyles.js';
+import GlobalStyles from './GlobalStyles';
 
 /**
  *

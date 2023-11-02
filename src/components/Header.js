@@ -31,21 +31,22 @@ export default function Header() {
 const S = {}
 
 S.Header = styled.div`
-  height: 50px;
   background-color: #333333;
   display: flex;
-  margin: auto;
+  height: 50px;
   justify-content: end;
+  margin: auto;
   padding: 2px;
   width: 100%;
  `;
 
  S.Button = styled.button`
+  background-color: darkgray;
+  font-weight: bold;
   height: 40px;
-  margin-top: auto;
   margin-bottom: auto;
   margin-left: 10px;
   margin-right: 10px;
-  background-color: darkgray;
-  font-weight: bold;
+  margin-top: auto;
+  padding: 10px;
  `;

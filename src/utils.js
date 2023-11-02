@@ -1,4 +1,4 @@
-export async function fetchData(query) {
+export async function fetcher(query, variables = {}) {
   try {
     const response = await fetch('http://localhost:3001/graphql', {
       method: 'POST',
@@ -6,7 +6,7 @@ export async function fetchData(query) {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({ query, variables }),
     });
 
     if (!response.ok) {
@@ -19,3 +19,11 @@ export async function fetchData(query) {
     console.error('There was a problem with the fetch operation:', error);
   }
 }
+
+
+export function handleKeyDown(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.target.blur();
+    }
+  }

@@ -3,11 +3,11 @@ exports.GET_BOARD= `
 `
 
 exports.GET_LIST = `
-  SELECT * FROM trello.lists WHERE id = $1
+  SELECT * FROM trello.list WHERE id = $1
 `
 
 exports.GET_CARD = `
-  SELECT * FROM trello.cards WHERE id = $1
+  SELECT * FROM trello.card WHERE id = $1
 `
 
 exports.GET_ALL_BOARDS= `
@@ -21,6 +21,15 @@ exports.GET_FULL_LIST= `
   WHERE trello.list.board_id = $1
   ORDER BY trello.list.id, trello.card.id;
 `
-exports.UPDTAE_CARD_TITLE= `
+
+exports.UPDATE_CARD_TITLE= `
   UPDATE trello.card SET title = $2 WHERE id = $1 RETURNING *;
+`
+
+exports.UPDATE_CARD_DESCRIPTION= `
+  UPDATE trello.card SET description = $2 WHERE id = $1 RETURNING *;
+`
+
+exports.UPDATE_LIST_TITLE= `
+  UPDATE trello.list SET title = $2 WHERE id = $1 RETURNING *;
 `

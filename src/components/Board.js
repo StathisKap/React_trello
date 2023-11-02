@@ -6,6 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { DataContext } from '../app/DataProvider';
+import Card from './Card';
 import List from './List';
 
 
@@ -14,11 +15,22 @@ import List from './List';
  *
  * 
  */
+export const CardContext = React.createContext();
+
+/**
+ *
+ *
+ * 
+ */
 export default function Board() {
   const { datalists, setDataLists } = React.useContext(DataContext)
+  const [isCardOpen, setIsCardOpen] = React.useState({id: null, isOpen: false})
   return (
     <S.Board>
-      {datalists.map((list) => (<li key={list.id}><List list={list} /></li>))}
+      <CardContext.Provider value={{isCardOpen, setIsCardOpen}}>
+        <Card/>
+        {datalists.map((list) => (<li key={list.id}><List list={list} /></li>))}
+      </CardContext.Provider>
     </S.Board>
   );
 };
@@ -32,12 +44,14 @@ export default function Board() {
 const S = {}
 
 S.Board = styled.ol`
-  margin: auto;
-  padding: 10px;
-  gap: 20px;
+  background-color: inherit;
+  color: inherit;
   display: flex;
+  flex-grow: 1;
+  gap: 20px;
   list-style: none;
+  margin: auto;
+  overflow-y: auto;
+  padding: 10px;
   width: 100%;
-  flex-grow: 1;  // Allow the component to take up available space
-  overflow-y: auto;  // Enable scrolling within the component if needed
 `;

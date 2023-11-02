@@ -12,6 +12,7 @@ type List {
 type Card {
   id: ID!
   title: String!
+  description: String
   list_id: ID!
 }
 
@@ -24,6 +25,8 @@ type ListWithCards {
 
 type Mutation {
   updateCardTitle(id: ID!, title: String!): Card
+  updateCardDescription(id: ID!, description: String!): Card
+  updateListTitle(id: ID!, title: String!): List
 }
 
 type Query {
@@ -37,5 +40,4 @@ type Query {
 schema {
   query: Query
   mutation: Mutation
-
 }

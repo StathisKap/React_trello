@@ -48,7 +48,17 @@ module.exports = {
   },
 
   updateCardTitle: async ({ id, title }) => {
-    const result = await pool.query(q.UPDTAE_CARD_TITLE, [id, title]);
+    const result = await pool.query(q.UPDATE_CARD_TITLE, [id, title]);
+    return result.rows[0];
+  },
+
+  updateCardDescription: async ({ id, description}) => {
+    const result = await pool.query(q.UPDATE_CARD_DESCRIPTION, [id, description]);
+    return result.rows[0];
+  },
+  
+  updateListTitle: async ({ id, title }) => {
+    const result = await pool.query(q.UPDATE_LIST_TITLE, [id, title]);
     return result.rows[0];
   }
 };
