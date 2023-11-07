@@ -3,19 +3,16 @@
  *
  * 
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { DataContext } from '../app/DataProvider';
-import Card from './Card';
+import { BoardSelectionContext } from './BoardSelection';
 import List from './List';
+import Card from './Card';
+import * as G from '../frgs'
+import * as U from '../utils'
 
 
-/**
- *
- *
- * 
- */
-export const CardContext = React.createContext();
+export const BoardContext = React.createContext();
 
 /**
  *
@@ -23,14 +20,28 @@ export const CardContext = React.createContext();
  * 
  */
 export default function Board() {
-  const { datalists, setDataLists } = React.useContext(DataContext)
-  const [isCardOpen, setIsCardOpen] = React.useState({id: null, isOpen: false})
+  const { selectedBoard } = useContext(BoardSelectionContext);
+  const [allLists, setAllLists] = React.useState([]);
+  const [CardState, setCardState] = React.useState({ id: null, isOpen: false });
+
+  console.log("selectedBoard", selectedBoard);
+
+  React.useEffect(() => {
+    U.fetcher(G.GQL_GET_FULL_LIST, { board_id: selectedBoard })
+      .then((data) => {
+        const { allListsWithCards } = data;
+        console.log("allListsWithCards ", allListsWithCards);
+        setAllLists(allListsWithCards);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, [selectedBoard]);
+
   return (
     <S.Board>
-      <CardContext.Provider value={{isCardOpen, setIsCardOpen}}>
+      <BoardContext.Provider value={{allLists, setAllLists, CardState, setCardState }}>
         <Card/>
-        {datalists.map((list) => (<li key={list.id}><List list={list} /></li>))}
-      </CardContext.Provider>
+        { allLists.map((list) => (<li key={list.id}><List key={list.id} list={list} /></li>))}
+      </BoardContext.Provider>
     </S.Board>
   );
 };
@@ -50,7 +61,7 @@ S.Board = styled.ol`
   flex-grow: 1;
   gap: 20px;
   list-style: none;
-  margin: auto;
+  margin-top: 10px;
   overflow-y: auto;
   padding: 10px;
   width: 100%;

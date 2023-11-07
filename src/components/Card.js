@@ -5,11 +5,9 @@
  */
 import React from "react";
 import styled from 'styled-components'
-import { CardContext } from "./Board";
 import * as U from '../utils';
 import * as G from '../frgs';
-import { ThemeContext } from "./Themes";
-
+import { BoardContext } from './Board';
 
 
 /**
@@ -18,43 +16,56 @@ import { ThemeContext } from "./Themes";
  * 
  */
 export default function Card() {
-  const { isCardOpen, setIsCardOpen } = React.useContext(CardContext)
-  const [CardContents, setContents] = React.useState({ id: null, title: null, description: null })
-  const { theme } = React.useContext(ThemeContext);
+
+  const { allLists, setAllLists, CardState, setCardState } = React.useContext(BoardContext);
 
   React.useEffect(() => {
-    if (isCardOpen.isOpen) {
-      U.fetcher(G.GQL_GET_CARD, { id: isCardOpen.id }).then(fetchedData => {
-        console.log("fetchedData", fetchedData);
-        setContents({ id: fetchedData.card.id, title: fetchedData.card.title, description: fetchedData.card.description })
-      })
+    // When the card opens, U.fetcher the card data
+    if (CardState.isOpen) {
+      U.fetcher(G.GQL_GET_CARD, { id: CardState.id })
+        .then((data) => {
+          const { card } = data;
+          setCardState({ ...CardState, ...card});
+        }
+        )
+        .catch(error => console.error('Error fetching data:', error));
     }
-  }, [isCardOpen.isOpen])
+  }
+    , [CardState.isOpen])
 
-/**
- *
- *
- * 
- */
+  /**
+   *
+   *
+   * 
+   */
   return (
-    isCardOpen.isOpen ? (
+    CardState.isOpen ? (
       <>
-        <S.Backdrop onClick={() => setIsCardOpen({ id: null, isOpen: false })} />
+        <S.Backdrop onClick={() => setCardState({ id: null, isOpen: false })} />
         <S.Card>
           <S.Header>
-            <S.Id>{CardContents.id}</S.Id>
+            <S.Id>{CardState.id}</S.Id>
             <S.Title
-              key={CardContents.id}
+              key={CardState.id}
               onKeyDown={U.handleKeyDown}
-              onBlur={(e) => handleCardBlur('title', CardContents.id ,e)}
-              defaultValue={CardContents.title}
+              onBlur={(e) => handleCardBlur('title', CardState.id, e)}
+              defaultValue={CardState.title}
             />
+            <S.Delete onClick={(e) => handleDelete(CardState.id)}>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#8B949E" xmlns="http://www.w3.org/2000/svg">
+                <path strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round" d="M15.75 4.48499C13.2525 4.23749 10.74 4.10999 8.235 4.10999C6.75 4.10999 5.265 4.18499 3.78 4.33499L2.25 4.48499"></path>
+                <path strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round" d="M6.375 3.7275L6.54 2.745C6.66 2.0325 6.75 1.5 8.0175 1.5H9.9825C11.25 1.5 11.3475 2.0625 11.46 2.7525L11.625 3.7275"></path>
+                <path strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round" d="M14.1374 6.85498L13.6499 14.4075C13.5674 15.585 13.4999 16.5 11.4074 16.5H6.59243C4.49993 16.5 4.43243 15.585 4.34993 14.4075L3.86243 6.85498"></path>
+                <path strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round" d="M7.74719 12.375H10.2447"></path>
+                <path strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round" d="M7.125 9.375H10.875"></path>
+              </svg>
+            </S.Delete>
           </S.Header>
           <S.Description
-            key={CardContents.id}
+            key={CardState.id}
             onKeyDown={U.handleKeyDown}
-            onBlur={(e) => handleCardBlur('description', CardContents.id ,e)}
-            defaultValue={CardContents.description}
+            onBlur={(e) => handleCardBlur('description', CardState.id, e)}
+            defaultValue={CardState.description}
           />
         </S.Card>
       </>
@@ -66,18 +77,23 @@ export default function Card() {
    *
    * 
    */
-   function handleCardBlur(key, index, e) {
+  function handleCardBlur(key, index, e) {
     const value = e.target.value;
-    setContents((prevContents) => ({ ...prevContents, [key]: value }));
+    setCardState((prevContents) => ({ ...prevContents, [key]: value }));
     const variables = { id: index };
     variables[key] = value;
-    U.fetcher(G[`GQL_UPDATE_CARD_${key.toUpperCase()}`], variables).then(fetchedData => {
-      console.log("fetchedData", fetchedData);
-    });
+    U.fetcher(G[`GQL_UPDATE_CARD_${key.toUpperCase()}`], variables);
   };
-  
-};
 
+  function handleDelete(id) {
+    setCardState({ ...CardState, isOpen: false })
+    setAllLists(allLists.map(list => ({
+      ...list,
+      cards: list.cards.filter(card => card.id !== id)
+    })));
+    U.fetcher(G.GQL_DELETE_CARD, { id: id })
+  }
+};
 
 
 /**
@@ -171,4 +187,16 @@ S.Description = styled.textarea`
   overflow-wrap: break-word;
   padding: 10px;
   text-align: center;
+`;
+
+S.Delete = styled.button`
+  background-color: rgba(155, 155, 155, 0.4);
+  border-radius: 8px;
+  border: 2px solid rgba(155, 155, 155, 0.2);
+  font-size: 20px;
+  font-weight: 900;
+  margin-bottom: 5px;
+  /* margin-right: 10px; */
+  margin-top: 5px;
+  padding: 8px;
 `;

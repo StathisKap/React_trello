@@ -1,25 +1,25 @@
 type Board {
   id: ID!
-  title: String!
+  title: String
 }
 
 type List {
   id: ID!
-  title: String!
+  title: String
   board_id: ID!
 }
 
 type Card {
   id: ID!
-  title: String!
+  title: String
   description: String
   list_id: ID!
 }
 
 type ListWithCards {
   id: ID!
-  title: String!
-  board_id: ID!
+  title: String
+  board_id: ID
   cards: [Card]
 }
 
@@ -27,6 +27,8 @@ type Mutation {
   updateCardTitle(id: ID!, title: String!): Card
   updateCardDescription(id: ID!, description: String!): Card
   updateListTitle(id: ID!, title: String!): List
+  addCard(list_id: ID!): Card
+  deleteCard(id: ID!): Card
 }
 
 type Query {

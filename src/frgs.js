@@ -16,10 +16,18 @@ query getCard($id: ID!) {
     id
     title
     description
+    list_id
   }
 }
 `;
 
+export const GQL_ADD_CARD = `
+mutation addCard($list_id: ID!) {
+  addCard(list_id: $list_id) {
+    id
+    title
+  }
+}`;
 
 export const GQL_UPDATE_CARD_TITLE = `
 mutation updateCardTitle($id: ID!, $title: String!) {
@@ -46,3 +54,12 @@ mutation UpdateListTitle($id: ID!, $title: String!) {
   }
 }`;
 
+
+
+export const GQL_DELETE_CARD = `
+mutation deleteCard($id: ID!) {
+  deleteCard(id: $id) {
+    id
+    title
+  }
+}`;

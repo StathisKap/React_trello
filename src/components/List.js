@@ -4,10 +4,10 @@
  * 
  */
 import React from 'react';
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import * as U from '../utils';
 import * as G from '../frgs';
-import { CardContext } from './Board';
+import { BoardContext } from './Board';
 
 
 /**
@@ -16,44 +16,44 @@ import { CardContext } from './Board';
  * 
  */
 export default function List({ list }) {
-  // const [isOverSubElement, setIsOverSubElement] = React.useState(false);
+  const [cardsList, setCardsList] = React.useState(list);
+  const { allLists, CardState, setCardState } = React.useContext(BoardContext);
 
-  /**
-   * States for the values of the inputs
-   *
-   * 
-   */
-  const [title, setTitle] = React.useState(list.title.charAt(0).toUpperCase() + list.title.slice(1));
-  const { setIsCardOpen } = React.useContext(CardContext)
+  React.useEffect(() => {
+    // when CardState changes, update the card in the list
+    if (CardState.id) {
+      const cardIndex = cardsList.cards.findIndex(card => card.id === CardState.id);
+      const updatedCard = { ...cardsList.cards[cardIndex], title: CardState.title };
+      const updatedCards = [...cardsList.cards];
+      updatedCards[cardIndex] = updatedCard;
+      setCardsList({ ...cardsList, cards: updatedCards });
+    }
+  },[CardState])
+
+  React.useEffect(() => {
+    console.log("allLists", allLists);
+    // When allLists updates, then find the list within it that matches the list.id, and update cardsLists
+    const listIndex = allLists.findIndex(list => list.id === cardsList.id);
+    setCardsList(allLists[listIndex]);
+  },[allLists])
 
 
   return (
-    <S.List
-      // draggable={!isOverSubElement}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-    >
+    <S.List>
       <S.Title
-        key={list.id}
+        key={cardsList.id}
         onKeyDown={U.handleKeyDown}
-        onBlur={(e) => handleTitleBlur(list.id ,e)}
-        // onMouseOver={handleMouseOver}
-        // onMouseOut={handleMouseOut}
-        defaultValue={title}
+        onBlur={(e) => handleTitleBlur(cardsList.id, e)}
+        defaultValue={cardsList.title}
       />
-      {list.cards.map((card) => (
-        <S.Card
-          key={card.id}
-          // onKeyDown={handleKeyDown}
-          // onBlur={(e) => handleCardBlur(card.id, e)}
-          onClick={() => {setIsCardOpen({id: card.id, isOpen: true}); }}
-          // onMouseOver={handleMouseOver}
-          // onMouseOut={handleMouseOut}
-        >
-        {card.title}
+      {cardsList.cards.map((card) => (
+        <S.Card key={card.id}
+          onClick={() => { setCardState({ ...CardState.card, id: card.id, isOpen: true }); }}
+          >
+          {card.title}
         </S.Card>
       ))}
-
+      <S.AddCard onClick={() => addCard(list.id)} > Add a card</S.AddCard>
     </S.List>
   );
 
@@ -62,29 +62,18 @@ export default function List({ list }) {
    *
    * 
    */
-  function handleDragStart(event) {
-    event.dataTransfer.setData('text/plain', list.title);
-    event.currentTarget.classList.add('tilted');
-  }
-
-  function handleDragEnd(event) {
-    event.dataTransfer.getData('text/plain', list.title);
-    event.currentTarget.classList.remove('tilted');
-  }
-
-  // function handleMouseOver() {
-    // setIsOverSubElement(true);
-  // };
-
-  // function handleMouseOut() {
-    // setIsOverSubElement(false);
-  // };
-
   function handleTitleBlur(index, e) {
-    setTitle(e.target.value);
-    U.fetcher(G.GQL_UPDATE_LIST_TITLE, { id: index, title: e.target.value}).then(fetchedData => {console.log("fetchedData", fetchedData);});
+    setCardsList({...cardsList, title: e.target.value});
+    U.fetcher(G.GQL_UPDATE_LIST_TITLE, { id: index, title: e.target.value }).then(fetchedData => { console.log("fetchedData", fetchedData); });
   };
 
+  async function addCard(id) {
+    const addedCard = await U.fetcher(G.GQL_ADD_CARD, { list_id: id })
+    setCardsList({
+      ...cardsList,
+      cards: [...cardsList.cards, addedCard.addCard]
+    });
+  };
 };
 
 
@@ -95,12 +84,6 @@ export default function List({ list }) {
  */
 const S = {};
 
-// S.tiltStyles = css`
-  /* opacity: 0.5; */
-  /* transform: rotate(12deg); */
-  /* transition: transform 0.2s; */
-// `;
-// 
 
 S.List = styled.div`
   background-color: inherit;
@@ -112,10 +95,6 @@ S.List = styled.div`
   padding-bottom: 10px;
   padding-left: 20px;
   width: 272px;
-
-  /* &.tilted { */
-    /* ${S.tiltStyles} */
-  /* } */
 `;
 
 S.Title = styled.input`
@@ -139,6 +118,7 @@ S.Card = styled.p`
   border: 2px solid rgba(155, 155, 155, 0.2);
   color: inherit;
   font-size: 14px;
+  font-weight: 600;
   margin-bottom: 5px;
   margin-right: 20px;
   overflow-wrap: break-word;
@@ -147,5 +127,21 @@ S.Card = styled.p`
   &:hover {
     background-color: rgba(155, 155, 155, 0.3); /* Adjust color as needed */
     border-color: rgba(155, 155, 155, 0.3); /* Set a border color */
+  }
+`;
+
+
+S.AddCard = styled.button`
+  background-color: rgba(155, 155, 155, 0.4); /* Adjust color as needed */
+  border-radius: 8px;
+  border: 3px solid rgba(145, 145, 145, 0.6);
+  color: inherit;
+  margin: auto;
+  padding: 8px;
+  text-align: center;
+  width: calc(100% - 25px);
+  &:hover {
+    background-color: rgba(155, 155, 155, 0.6); /* Adjust color as needed */
+    border: 3px solid rgba(145, 145, 145, 0.8);
   }
 `;
