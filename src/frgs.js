@@ -21,6 +21,14 @@ query getCard($id: ID!) {
 }
 `;
 
+export const GQL_ADD_LIST = `
+mutation addList($board_id: ID!) {
+  addList(board_id: $board_id) {
+    id
+    title
+  }
+}`;
+
 export const GQL_ADD_CARD = `
 mutation addCard($list_id: ID!) {
   addCard(list_id: $list_id) {
@@ -61,5 +69,20 @@ mutation deleteCard($id: ID!) {
   deleteCard(id: $id) {
     id
     title
+  }
+}`;
+
+export const GQL_DELETE_LIST= `
+mutation deleteList($id: ID!) {
+  deleteList(id: $id) {
+    id
+    title
+  }
+}`;
+
+export const GQL_DELETE_CARDS_BY_LIST_ID= `
+mutation deleteCardsByListId($list_id: ID!) {
+  deleteCardsByListId(list_id: $list_id) {
+    id
   }
 }`;

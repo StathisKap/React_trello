@@ -24,8 +24,6 @@ export function BoardSelection({ children }) {
     setSelectedBoard(boards[0]);
   }, [boards]);
 
-  console.log("selectedBoard", selectedBoard);
-
   return (
     <S.Selector>
       <BoardSelectionContext.Provider value={{ selectedBoard }}>

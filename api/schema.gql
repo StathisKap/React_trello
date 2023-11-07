@@ -27,8 +27,11 @@ type Mutation {
   updateCardTitle(id: ID!, title: String!): Card
   updateCardDescription(id: ID!, description: String!): Card
   updateListTitle(id: ID!, title: String!): List
+  addList(board_id: ID!): List
   addCard(list_id: ID!): Card
   deleteCard(id: ID!): Card
+  deleteList(id: ID!): List
+  deleteCardsByListId(list_id: ID!): [Card]
 }
 
 type Query {

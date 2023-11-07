@@ -21,6 +21,9 @@ exports.GET_FULL_LIST = `
   WHERE trello.list.board_id = $1
   ORDER BY trello.list.id, trello.card.id;
 `
+exports.ADD_LIST = `
+  INSERT INTO trello.list (title, board_id) VALUES (null, $1) RETURNING *;
+`
 
 exports.ADD_CARD = `
   INSERT INTO trello.card (title, list_id) VALUES (null, $1) RETURNING *;
@@ -38,6 +41,14 @@ exports.UPDATE_LIST_TITLE = `
   UPDATE trello.list SET title = $2 WHERE id = $1 RETURNING *;
 `
 
+exports.DELETE_LIST = `
+DELETE FROM trello.list WHERE id = $1 RETURNING *;
+`
+
 exports.DELETE_CARD = `
 DELETE FROM trello.card WHERE id = $1 RETURNING *;
+`
+
+exports.DELETE_CARDS_BY_LIST_ID = `
+DELETE FROM trello.card WHERE list_id = $1 RETURNING *;
 `

@@ -47,6 +47,11 @@ module.exports = {
     return Object.values(listsMap);
   },
 
+  addList : async ({ board_id }) => {
+    const result = await pool.query(q.ADD_LIST, [board_id]);
+    return result.rows[0];
+  },
+
   addCard: async ({ list_id }) => {
     const result = await pool.query(q.ADD_CARD, [list_id]);
     return result.rows[0];
@@ -70,5 +75,15 @@ module.exports = {
   deleteCard: async ({ id }) => {
     const result = await pool.query(q.DELETE_CARD, [id]);
     return result.rows[0];
+  },
+
+  deleteList: async ({ id }) => {
+    const result = await pool.query(q.DELETE_LIST, [id]);
+    return result.rows[0];
+  },
+
+  deleteCardsByListId: async ({ list_id }) => {
+    const result = await pool.query(q.DELETE_CARDS_BY_LIST_ID, [list_id]);
+    return Array.isArray(result.rows) ? result.rows : [];
   },
 };

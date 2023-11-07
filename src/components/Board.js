@@ -24,13 +24,10 @@ export default function Board() {
   const [allLists, setAllLists] = React.useState([]);
   const [CardState, setCardState] = React.useState({ id: null, isOpen: false });
 
-  console.log("selectedBoard", selectedBoard);
-
   React.useEffect(() => {
     U.fetcher(G.GQL_GET_FULL_LIST, { board_id: selectedBoard })
       .then((data) => {
         const { allListsWithCards } = data;
-        console.log("allListsWithCards ", allListsWithCards);
         setAllLists(allListsWithCards);
       })
       .catch(error => console.error('Error fetching data:', error));
@@ -41,9 +38,17 @@ export default function Board() {
       <BoardContext.Provider value={{allLists, setAllLists, CardState, setCardState }}>
         <Card/>
         { allLists.map((list) => (<li key={list.id}><List key={list.id} list={list} /></li>))}
+        <S.AddList onClick={() => addList(selectedBoard)} > Add a List</S.AddList>
       </BoardContext.Provider>
     </S.Board>
   );
+
+ async function addList(id) {
+   const addedList = await U.fetcher(G.GQL_ADD_LIST, { board_id: id })
+   addedList.addList.cards = [];
+   const updatedLists = [...allLists, addedList.addList];
+   setAllLists(updatedLists);
+ };
 };
 
 
@@ -65,4 +70,19 @@ S.Board = styled.ol`
   overflow-y: auto;
   padding: 10px;
   width: 100%;
+`;
+
+S.AddList= styled.button`
+  background-color: rgba(155, 155, 155, 0.4); /* Adjust color as needed */
+  border-radius: 12px;
+  border: 2px solid;
+  color: inherit;
+  font-weight: 700;
+  height: min-content;
+  padding: 10px;
+  width: 272px;
+  &:hover {
+    background-color: rgba(155, 155, 155, 0.6); /* Adjust color as needed */
+    border: 3px solid rgba(145, 145, 145, 0.8);
+  }
 `;
