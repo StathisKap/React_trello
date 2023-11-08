@@ -12,7 +12,13 @@ import * as G from '../frgs'
 import * as U from '../utils'
 
 
+/**
+ *
+ *
+ * 
+ */
 export const BoardContext = React.createContext();
+
 
 /**
  *

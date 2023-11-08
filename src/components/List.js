@@ -34,13 +34,23 @@ export default function List({ list }) {
     // When allLists updates, then find the list within it that matches the list.id, and update cardsLists
     const listIndex = allLists.findIndex(list => list.id === cardsList.id);
     setCardsList(allLists[listIndex]);
+    console.log("allLists", allLists);
   }, [allLists])
+
+  React.useEffect(() => {
+    // When cardsList updates, then update allLists
+    const listIndex = allLists.findIndex(list => list.id === cardsList.id);
+    const updatedLists = [...allLists];
+    updatedLists[listIndex] = cardsList;
+    setAllLists(updatedLists);
+  }, [cardsList])
 
 
   return (
     <S.List>
       <S.Head>
         <S.Title
+          id={cardsList.id}
           key={cardsList.id}
           onKeyDown={U.handleKeyDown}
           onBlur={(e) => handleTitleBlur(cardsList.id, e)}
@@ -88,6 +98,8 @@ export default function List({ list }) {
   async function deleteList(id) {
   // Update allLists
   const updatedLists = allLists.filter(list => list.id !== id);
+  console.log("Delete List");
+  console.log("updatedLists", updatedLists);
   setAllLists(updatedLists);
   // Delete List by ID
   U.fetcher(G.GQL_DELETE_LIST, { id: id })
