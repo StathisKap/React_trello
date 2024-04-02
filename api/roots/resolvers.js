@@ -86,4 +86,9 @@ module.exports = {
     const result = await pool.query(q.DELETE_CARDS_BY_LIST_ID, [list_id]);
     return Array.isArray(result.rows) ? result.rows : [];
   },
+
+  changeCardList: async ({ id, list_id }) => {
+    const result = await pool.query(q.CHANGE_CARD_LIST, [id, list_id]);
+    return Array.isArray(result.rows) ? result.rows : [];
+  },
 };

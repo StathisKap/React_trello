@@ -52,3 +52,6 @@ DELETE FROM trello.card WHERE id = $1 RETURNING *;
 exports.DELETE_CARDS_BY_LIST_ID = `
 DELETE FROM trello.card WHERE list_id = $1 RETURNING *;
 `
+exports.CHANGE_CARD_LIST = `
+UPDATE trello.card SET list_id = $2 WHERE id = $1 RETURNING *;
+`

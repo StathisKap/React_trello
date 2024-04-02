@@ -8,6 +8,7 @@ const GlobalStyles = createGlobalStyle`
     padding: 0;
     display: flex;
     flex-direction: column;
+    transition: background-color 0.3s;
   }
 
   body {

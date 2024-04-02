@@ -86,3 +86,11 @@ mutation deleteCardsByListId($list_id: ID!) {
     id
   }
 }`;
+
+export const GQL_CHANGE_CARD_LIST = `
+mutation changeCardList($id: ID!, $list_id: ID!) {
+  changeCardList(id: $id, list_id: $list_id) {
+    id
+    title
+  }
+}`;

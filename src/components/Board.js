@@ -39,6 +39,10 @@ export default function Board() {
       .catch(error => console.error('Error fetching data:', error));
   }, [selectedBoard]);
 
+  React.useEffect(() => {
+    // changeList("241", "1")
+  }, [CardState]);
+
   return (
     <S.Board>
       <BoardContext.Provider value={{allLists, setAllLists, CardState, setCardState }}>
@@ -55,6 +59,24 @@ export default function Board() {
    const updatedLists = [...allLists, addedList.addList];
    setAllLists(updatedLists);
  };
+
+
+
+ // Change the list of a card
+  async function changeList(cardId, listId) {
+    const updatedCard = await U.fetcher(G.GQL_CHANGE_CARD_LIST, { id: cardId, list_id: listId })
+    // const updatedCard =  { changeCardList: { "id": "241", "title": "3" }}
+    const updatedLists = allLists.map((list) => {
+      if (list.id === listId) {
+        list.cards.push(updatedCard.changeCardList);
+      }
+      if (list.id === updatedCard.changeCardList.list_id) {
+        list.cards = list.cards.filter((card) => card.id !== cardId);
+      }
+      return list;
+    });
+    setAllLists(updatedLists);
+  };
 };
 
 

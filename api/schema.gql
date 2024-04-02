@@ -32,6 +32,7 @@ type Mutation {
   deleteCard(id: ID!): Card
   deleteList(id: ID!): List
   deleteCardsByListId(list_id: ID!): [Card]
+  changeCardList(id: ID!, list_id: ID!): Card
 }
 
 type Query {
